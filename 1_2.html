@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Advent of code - Day 1</title>
+</head>
+
+<body>
+    <p>--- Part Two ---
+    <br>
+    Considering every single measurement isn't as useful as you expected: there's just too much noise in the data.
+    <br>
+    Instead, consider sums of a three-measurement sliding window. Again considering the above example:
+    <br>
+    199  A      
+    200  A B    
+    208  A B C  
+    210    B C D
+    200  E   C D
+    207  E F   D
+    240  E F G  
+    269    F G H
+    260      G H
+    263        H
+    <br>
+    Start by comparing the first and second three-measurement windows. The measurements in the first window are marked A (199, 200, 208); their sum is 199 + 200 + 208 = 607. The second window is marked B (200, 208, 210); its sum is 618. The sum of measurements in the second window is larger than the sum of the first, so this first comparison increased.
+    <br>
+    Your goal now is to count the number of times the sum of measurements in this sliding window increases from the previous sum. So, compare A with B, then compare B with C, then C with D, and so on. Stop when there aren't enough measurements left to create a new three-measurement sum.
+    <br>
+    In the above example, the sum of each three-measurement window is as follows:
+    <br>
+    A: 607 (N/A - no previous sum)
+    B: 618 (increased)
+    C: 618 (no change)
+    D: 617 (decreased)
+    E: 647 (increased)
+    F: 716 (increased)
+    G: 769 (increased)
+    H: 792 (increased)
+    <br>
+    In this example, there are 5 sums that are larger than the previous sum.
+    <br>
+    Consider sums of a three-measurement sliding window. How many sums are larger than the previous sum?
+    <br>
+    </p>
+    <br>
+    <input id="file" type="file" />
+    <button id="button" class="favorite styled" type="button" onclick="decembre()">Lancer le programme</button>
+</body>
+
+<script>
+let file = document.getElementById("file");
+let doc = "";
+file.onchange = function() {
+    let reader = new FileReader();
+    reader.onload = function(event) {
+        doc = reader.result;
+    }
+    reader.readAsText(file.files[0]);
+}
+
+function decembre() {
+    document.getElementById("button").disabled = true;
+    doc = doc.split("\r\n");
+    let counter = 0;
+    for (let i=0; i<doc.length-3; i++) {
+        let block1 = parseInt(doc[i]) + parseInt(doc[i+1]) + parseInt(doc[i+2]);
+        let block2 = parseInt(doc[i+1]) + parseInt(doc[i+2]) + parseInt(doc[i+3]);
+        if (parseInt(block2) > parseInt(block1)) {
+            counter++;
+        }
+    }
+    console.log(counter);
+}
+</script>
+
+<style>
+.styled {
+    border: 0;
+    line-height: 2.5;
+    padding: 0 20px;
+    font-size: 1rem;
+    text-align: center;
+    color: #fff;
+    text-shadow: 1px 1px 1px #000;
+    border-radius: 10px;
+    background-color: rgba(220, 0, 0, 1);
+    background-image: linear-gradient(to top left,
+                                      rgba(0, 0, 0, .2),
+                                      rgba(0, 0, 0, .2) 30%,
+                                      rgba(0, 0, 0, 0));
+    box-shadow: inset 2px 2px 3px rgba(255, 255, 255, .6),
+                inset -2px -2px 3px rgba(0, 0, 0, .6);
+}
+
+.styled:hover {
+    background-color: rgba(255, 0, 0, 1);
+}
+
+.styled:active {
+    box-shadow: inset -2px -2px 3px rgba(255, 255, 255, .6),
+                inset 2px 2px 3px rgba(0, 0, 0, .6);
+}
+
+</style>
+</html>
