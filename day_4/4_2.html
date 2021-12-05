@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Advent of code - Day 4</title>
+</head>
+
+<body>
+    <p>--- Part Two ---
+
+On the other hand, it might be wise to try a different strategy: let the giant squid win.
+
+You aren't sure how many bingo boards a giant squid could play at once, so rather than waste time counting its arms, the safe thing to do is to figure out which board will win last and choose that one. That way, no matter which boards it picks, it will win for sure.
+
+In the above example, the second board is the last to win, which happens after 13 is eventually called and its middle column is completely marked. If you were to keep playing until this point, the second board would have a sum of unmarked numbers equal to 148 for a final score of 148 * 13 = 1924.
+
+Figure out which board will win last. Once it wins, what would its final score be?
+
+
+    </p>
+    <br>
+    <input id="file" type="file" />
+    <button id="button" class="favorite styled" type="button" onclick="decembre()">Lancer le programme</button>
+</body>
+
+<script>
+let file = document.getElementById("file");
+let doc = "";
+file.onchange = function() {
+    let reader = new FileReader();
+    reader.onload = function(event) {
+        doc = reader.result;
+    }
+    reader.readAsText(file.files[0]);
+}
+
+function decembre() {
+    document.getElementById("button").disabled = true;
+    let lines = getLines(doc);
+    let numbersToDraw = getNumbersToDraw(lines);
+    let boards = getBoards(lines);
+    console.log(bingo(numbersToDraw, boards));
+}
+
+function getLines(doc) {
+    let lines = doc.split('\r\n');
+    return lines
+}
+
+function getNumbersToDraw(lines) {
+    let allNumbers = lines.splice(0, 1)[0];
+    return allNumbers.split(',');
+}
+
+function getBoards(lines) {
+    let boards = [];
+    for (let i=0; i<lines.length; i++) {
+        let currentLine = lines[i];
+        if (currentLine === "") {
+            let board = getBoard(lines, i+1);
+            boards.push(board);
+        }
+    }
+    return boards;
+}
+
+function getBoard(lines, firstline) {
+    let boardLines = [];
+    let board = [];
+    for(let i=firstline; i<firstline+5; i++) {
+        let currentLine = lines[i];
+        boardLines.push(currentLine);
+    }
+    for (let line of boardLines) {
+        let lineArray = line.split(" ");
+        board.push(cleanLine(lineArray));
+    }
+    return board;
+}
+
+function cleanLine(line) {
+    let cleanLine = [];
+    for (let i=0; i<line.length; i++) {
+        if (line[i] !== "") {
+            cleanLine.push(line[i]);
+        }
+    }
+    return cleanLine;
+}
+
+function bingo(numbersToDraw, boards) {
+    let i = 0;
+    let drawnNumbers = [];
+    let winners = [];
+    while (i<numbersToDraw.length) {
+        let draw = numbersToDraw[i];
+        drawnNumbers.push(draw);
+        for (let board of boards) {
+            if (!winners.includes(board)) {
+                isWinning = checkBoard(board, drawnNumbers);
+                if (isWinning) {
+                    winners.push(board);
+                }
+            }
+        }
+        if (winners.length === boards.length) {
+            break;
+        }
+        i++;
+    }
+    let winner = winners.pop();
+    return getScore(drawnNumbers, winner);
+}
+
+function checkBoard(board, drawnNumbers) {
+    if (drawnNumbers.length<board.length) return false;
+    let isWinning =  checkAllRows(board, drawnNumbers);
+    if (!isWinning) {
+        isWinning = checkAllColumns(board, drawnNumbers);
+        
+    }
+    return isWinning;
+}
+
+function checkAllRows(board, drawnNumbers) {
+    for (let row of board) {
+        if (checkRow(row, drawnNumbers)) return true;
+    }
+    return false;
+}
+
+function checkRow(row, drawnNumbers) {
+    let numbersInRow = 0;
+    for (let number of drawnNumbers) {
+        if (row.includes(number)) numbersInRow++;
+        if (numbersInRow === row.length) return true;
+    }
+    return false;
+}
+
+function checkAllColumns(board, drawnNumbers) {
+    let columns = getColumns(board);
+    for (let column of columns) {
+        if (checkRow(column, drawnNumbers)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function getColumns(board) {
+    let columns = [];
+    for (let i=0; i<board.length; i++) {
+        let column = [];
+        for (let j=0; j<board.length; j++) {
+            column.push(board[j][i]);
+        }
+        columns.push(column);
+    }
+    return columns;
+}
+
+function getScore(drawnNumbers, board) {
+    let unmarkedNumbersSum = getAllUnmarkedNumbersSum(drawnNumbers, board);
+    let lastNumberDrawn = drawnNumbers.pop();
+    return unmarkedNumbersSum * lastNumberDrawn;
+}
+
+function getAllUnmarkedNumbersSum(drawnNumbers, board) {
+    let unmarkedNumbers = getAllUnmarkedNumbers(drawnNumbers, board);
+    let sum = 0;
+    for (let number of unmarkedNumbers) {
+        sum += parseInt(number);
+    }
+    console.log("sum "+sum);
+    return sum;
+}
+
+function getAllUnmarkedNumbers(drawnNumbers, board) {
+    let unmarkedNumbers = []
+    for (let row of board) {
+        for (let number of row) {
+            if (!drawnNumbers.includes(number)){
+                unmarkedNumbers.push(number);
+            }
+        }
+    }
+    return unmarkedNumbers;
+}
+</script>
+
+<style>
+.styled {
+    border: 0;
+    line-height: 2.5;
+    padding: 0 20px;
+    font-size: 1rem;
+    text-align: center;
+    color: #fff;
+    text-shadow: 1px 1px 1px #000;
+    border-radius: 10px;
+    background-color: rgba(220, 0, 0, 1);
+    background-image: linear-gradient(to top left,
+                                      rgba(0, 0, 0, .2),
+                                      rgba(0, 0, 0, .2) 30%,
+                                      rgba(0, 0, 0, 0));
+    box-shadow: inset 2px 2px 3px rgba(255, 255, 255, .6),
+                inset -2px -2px 3px rgba(0, 0, 0, .6);
+}
+
+.styled:hover {
+    background-color: rgba(255, 0, 0, 1);
+}
+
+.styled:active {
+    box-shadow: inset -2px -2px 3px rgba(255, 255, 255, .6),
+                inset 2px 2px 3px rgba(0, 0, 0, .6);
+}
+
+</style>
+</html>
