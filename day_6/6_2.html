@@ -36,10 +36,10 @@ file.onchange = function() {
 function decembre() {
     document.getElementById("button").disabled = true;
     let school = getSchool(doc);
-    for (let i=0; i<256; i++) {
-        school = growth(school);
-    }
-    console.log(school.length);
+    let days = 128;
+    for (let i=0; i<days; i++) school = growth(school);
+    let totalGrowth = getGrowthForSchool(school, days);
+    console.log(totalGrowth);
 }
 
 function getSchool(doc) {
@@ -64,6 +64,48 @@ function growth(school) {
     }
     return school;
 }
+
+function growthForOneFish(fish, days) {
+    let school = [fish];
+    for (; days>0; days--) {
+        school = growth(school);
+    }
+    return school.length;
+}
+
+function getGrowthTable(days) {
+    let growthTable = [];
+    for (let i=0; i<9; i++) growthTable.push(growthForOneFish(i, days));
+    return growthTable;
+}
+
+function getGrowthForSchool(school, days) {
+    let growth = 0;
+    let growthTable = getGrowthTable(days);
+    for (let fish of school) {
+        growth += growthTable[fish];
+    }
+    return growth;
+}
+
+function getGrowth(school, days) {
+    let growth = 0;
+    for (let fish of school) growth += (growthForOneFish(fish, days));
+    return growth;
+}
+
+// function getGrowth(school, days) {
+//     let growth = 0;
+//     let growthTable = getGrowthTable(days);
+//     let knownFish = [0, 0, 0, 0, 0, 0, 0, 0]
+//     for (let fish of school) {
+//         knownFish[fish]++;
+//     }
+//     for (let knownFishGroup of knownFish) {
+//         growth += knownFishGroup * growthTable[fish];
+//     }
+//     return growth;
+// }
 </script>
 
 <style>
