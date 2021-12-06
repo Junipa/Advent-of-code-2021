@@ -87,25 +87,6 @@ function getGrowthForSchool(school, days) {
     }
     return growth;
 }
-
-function getGrowth(school, days) {
-    let growth = 0;
-    for (let fish of school) growth += (growthForOneFish(fish, days));
-    return growth;
-}
-
-// function getGrowth(school, days) {
-//     let growth = 0;
-//     let growthTable = getGrowthTable(days);
-//     let knownFish = [0, 0, 0, 0, 0, 0, 0, 0]
-//     for (let fish of school) {
-//         knownFish[fish]++;
-//     }
-//     for (let knownFishGroup of knownFish) {
-//         growth += knownFishGroup * growthTable[fish];
-//     }
-//     return growth;
-// }
 </script>
 
 <style>
