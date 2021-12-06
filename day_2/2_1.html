@@ -64,11 +64,18 @@ function decembre() {
     let depth = 0;
     let horizontal = 0;
     for (let i=0; i<doc.length; i++) {
-        //identify direction
-        if (parseInt(block2) > parseInt(block1)) {
-            //increment the right variable
-        } else {
-            //increment the right variable
+        let direction = doc[i].split(" ")[0];
+        let move = doc[i].split(" ")[1];
+        switch (direction) {
+            case "forward":
+                horizontal += parseInt(move);
+                break;
+            case "up":
+                depth -= parseInt(move);
+                break;
+            case "down":
+                depth += parseInt(move)
+                break;
         }
     }
     console.log(depth*horizontal);
